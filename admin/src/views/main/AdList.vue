@@ -1,16 +1,21 @@
 <template>
   <div>
-    <h1>分类列表</h1>
-    <el-table :data="items">
+    <h1>物品列表</h1>
+    <el-table :data="ads">
       <el-table-column prop="_id" label="ID" width="240"></el-table-column>
-      <el-table-column prop="name" label="姓名"></el-table-column>
-      <el-table-column prop="parent.name" label="上级分类"></el-table-column>
+      <el-table-column prop="name" label="名称"></el-table-column>
+      <el-table-column prop="items" label="图片">
+        <template slot-scope="scope">
+          <img :src = 'scope.row.items[0].image' style='height: 3rem'></img>
+          <!-- {{scope.row}} -->
+        </template>
+      </el-table-column>
       <el-table-column fixed="right" label="操作" width="300">
         <template slot-scope="scope">
           <el-button
             type="primary"
             size="small"
-            @click="$router.push(`/categories/edit/${scope.row._id}`)"
+            @click="$router.push(`/ads/edit/${scope.row._id}`)"
           >编辑</el-button>
           <el-button type="danger" size="small" @click="remove(scope.row)">删除</el-button>
         </template>
@@ -21,16 +26,16 @@
 
 <script>
 export default {
-  name: "CategoryList",
+  name: "AdList",
   data() {
     return {
-      items: []
+      ads: []
     };
   },
   methods: {
     async fetch() {
-      const res = await this.$http.get("/rest/categories");
-      this.items = res.data;
+      const res = await this.$http.get("/rest/ads");
+      this.ads = res.data;
     },
     remove(row) {
       console.log(row)
@@ -40,7 +45,7 @@ export default {
         type: "warning"
       })
         .then(async () => {
-          const res = await this.$http.delete(`/rest/categories/${row._id}`);
+          const res = await this.$http.delete(`/rest/ads/${row._id}`);
           console.log(res);
           this.fetch();
           this.$message({
@@ -53,9 +58,6 @@ export default {
   created() {
     this.fetch();
   },
-  components: {},
-
-  computed: {}
 };
 </script>
 <style lang='scss' scoped>
